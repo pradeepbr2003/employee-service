@@ -1,5 +1,6 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.client.Company;
 import org.example.client.CompanyService;
 import org.example.dto.Employee;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class EmployeeService {
 
@@ -20,6 +22,7 @@ public class EmployeeService {
     private CompanyService companyService;
 
     public String addEmployee(Employee employee) {
+        log.info("Invoked {} : addEmployee method and employeed passed in {}", this.getClass().getName(),employee);
         Optional<Employee> optEmployee = employeeBean.stream().filter(e -> (e.getEmpId() == employee.getEmpId())).findAny();
         if (optEmployee.isPresent()) {
             return String.format("Employee with %d and %s already exists", employee.getEmpId(), employee.getEmpName());
@@ -29,12 +32,14 @@ public class EmployeeService {
     }
 
     public Map<String, Object> getAllEmployees() {
+        log.info("Invoked {} : getAllEmployees method ", this.getClass().getName());
         List<Company> companyList = companyService.getAllCompanies();
         Map map = Map.of("employees", employeeBean, "companies", companyList);
         return map;
     }
 
     public Map<String, Object> getEmployeeById(Integer id) {
+        log.info("Invoked {} : getEmployeeById method ", this.getClass().getName());
         Optional<Employee> optEmployee = employeeBean.stream().filter(e -> e.getEmpId() == id).findAny();
         if (optEmployee.isPresent()) {
             return Map.of("employee", optEmployee.get(), "company-name", companyService.getCompanyName(id));
@@ -43,6 +48,7 @@ public class EmployeeService {
     }
 
     public String deleteEmployeeById(Integer id) {
+        log.info("Invoked {} : deleteEmployeeById method ", this.getClass().getName());
         boolean employeeDeleted = employeeBean.removeIf(e -> (e.getEmpId() == id));
         if (employeeDeleted) {
             return String.format("Employee with %d is successfully deleted", id);
@@ -51,6 +57,7 @@ public class EmployeeService {
     }
 
     public String updateEmployee(Employee employee) {
+        log.info("Invoked {} : updateEmployee method ", this.getClass().getName());
         Optional<Employee> optEmployee = employeeBean.stream().filter(e -> (e.getEmpId() == employee.getEmpId())).findAny();
         if (optEmployee.isPresent()) {
             Employee updateEmployee = optEmployee.get();
